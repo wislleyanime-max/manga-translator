@@ -1,20 +1,30 @@
 import streamlit as st
-from PIL import Image
+import google.generativeai as genai
+
+genai.configure(
+    api_key=st.secrets["GEMINI_API_KEY"]
+)
+
+modelo = genai.GenerativeModel("gemini-2.5-flash")
 
 st.title("Tradutor de Mangá")
 
-imagem = st.file_uploader(
-    "Envie uma imagem",
-    type=["png", "jpg", "jpeg"]
-)
+texto = st.text_area("Cole um texto coreano")
 
-if imagem:
-    img = Image.open(imagem)
+if st.button("Traduzir"):
+    resposta = modelo.generate_content(
+        f"""
+        Traduza para português brasileiro.
 
-    st.image(img)
+        Mostre:
+        - Tradução principal
+        - 3 alternativas
+        - Confiança
+        - Observações culturais
 
-    st.subheader("Texto detectado")
-    st.write("(OCR será adicionado aqui)")
+        Texto:
+        {texto}
+        """
+    )
 
-    st.subheader("Tradução")
-    st.write("(Tradução aparecerá aqui)")
+    st.write(resposta.text)
