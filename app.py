@@ -6,7 +6,19 @@ genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 modelo = genai.GenerativeModel("gemini-2.5-flash")
 
-st.title("Tradutor de Mangá")
+st.title("Tradutor de Mangá e HQ")
+
+idioma = st.selectbox(
+    "Traduzir para:",
+    [
+        "Português",
+        "Inglês",
+        "Espanhol",
+        "Francês",
+        "Alemão",
+        "Italiano"
+    ]
+)
 
 arquivo = st.file_uploader(
     "Envie uma imagem",
@@ -19,21 +31,35 @@ if arquivo:
     st.image(imagem)
 
     if st.button("Traduzir imagem"):
-        resposta = modelo.generate_content([
-            """
-            Analise a imagem.
+        with st.spinner("Traduzindo..."):
+            resposta = modelo.generate_content([
+                f"""
+                Analise a imagem.
 
-            Extraia todo texto encontrado.
+                Detecte automaticamente o idioma.
 
-            Traduza para português brasileiro.
+                Extraia todo o texto encontrado.
 
-            Para cada trecho mostre:
-            - Tradução principal
-            - 3 alternativas
-            - Confiança
-            - Observações culturais
-            """,
-            imagem
-        ])
+                Traduza para {idioma}.
 
-        st.write(resposta.text)
+                Para cada trecho mostre:
+
+                Texto original
+
+                Tradução principal
+
+                Alternativas:
+                - opção 1
+                - opção 2
+                - opção 3
+
+                Confiança (%)
+
+                Observações culturais quando necessário.
+
+                Organize a resposta de forma limpa e fácil de ler.
+                """,
+                imagem
+            ])
+
+            st.write(resposta.text)
