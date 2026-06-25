@@ -1,4 +1,5 @@
 import streamlit as st
+from PIL import Image
 
 st.title("Tradutor de Mangá")
 
@@ -8,5 +9,12 @@ imagem = st.file_uploader(
 )
 
 if imagem:
-    st.image(imagem)
-    st.success("Imagem carregada com sucesso!")
+    img = Image.open(imagem)
+
+    st.image(img)
+
+    st.subheader("Texto detectado")
+    st.write("(OCR será adicionado aqui)")
+
+    st.subheader("Tradução")
+    st.write("(Tradução aparecerá aqui)")
